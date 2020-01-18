@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:path/path.dart' as p;
 
+var fileExists = (String path) =>
+    FileSystemEntity.typeSync(path) != FileSystemEntityType.notFound;
+
 var trimConsoleInput = (String input) => input.trim();
 
 var removeDot = (String rule) => rule.substring(1);
@@ -15,7 +18,7 @@ var isCssFile = (FileSystemEvent e) => e.path.endsWith('.css');
 
 void handleChangedCss(FileSystemEvent e) {
   var modifyEvent = e as FileSystemModifyEvent;
-  if (modifyEvent.contentChanged) {
+  if (fileExists(e.path) && modifyEvent.contentChanged) {
     var cssFile = File(modifyEvent.path);
     var cssFilename = p.basename(cssFile.path);
     var typeDefFileContent = processCss(cssFile.readAsStringSync());
