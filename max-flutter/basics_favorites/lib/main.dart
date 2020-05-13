@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './question.dart';
-import './answer.dart';
+import './quiz.dart';
+import './result.dart';
 
 void main() => runApp(MyApp());
 
@@ -29,11 +29,9 @@ class _MyAppState extends State<MyApp> {
   ];
 
   void _answerQuestion(String selectedAnswer) {
-    if (_questionIndex < _questions.length - 1) {
-      setState(() {
-        _questionIndex = _questionIndex + 1;
-      });
-    } else {}
+    setState(() {
+      _questionIndex = _questionIndex + 1;
+    });
   }
 
   @override
@@ -41,17 +39,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: Text('My First App')),
-        body: Column(
-          children: [
-            Question(_questions[_questionIndex]['questionText']),
-            ...(_questions[_questionIndex]['answers'] as List<String>)
-                .map((answer) => Answer(
-                      answer,
-                      onPressed: _answerQuestion,
-                    ))
-                .toList(),
-          ],
-        ),
+        body: _questionIndex < _questions.length
+            ? Quiz(_questions, _answerQuestion, _questionIndex)
+            : Result(),
       ),
       theme: ThemeData.dark(),
     );
