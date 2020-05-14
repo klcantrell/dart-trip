@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Answer extends StatelessWidget {
-  static _defaultOnPressed(String value) => print('onPressed not set');
+  static _defaultOnPressed() => print('onPressed not set');
   final String answerText;
-  final void Function(String) onPressed;
+  final void Function() onPressed;
 
   Answer(this.answerText, {this.onPressed = _defaultOnPressed});
 
@@ -14,7 +14,7 @@ class Answer extends StatelessWidget {
       child: RaisedButton(
         child: Text(answerText),
         textColor: Colors.white,
-        onPressed: () => onPressed(answerText),
+        onPressed: onPressed,
         color: Colors.pinkAccent,
       ),
     );
