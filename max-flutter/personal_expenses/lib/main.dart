@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import './trasaction.dart';
 
 void main() {
@@ -71,10 +73,10 @@ class MyHomePage extends StatelessWidget {
                                     ),
                                   ),
                                   child: Text(
-                                    tx.amount.toString(),
+                                    '\$${tx.amount.toString()}',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       color: Colors.purple,
                                     ),
                                   ),
@@ -86,12 +88,12 @@ class MyHomePage extends StatelessWidget {
                                       tx.title,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Colors.purple,
+                                        fontSize: 16,
+                                        color: Colors.black,
                                       ),
                                     ),
                                     Text(
-                                      tx.date.toString(),
+                                      DateFormat.yMMMd().format(tx.date),
                                       style: TextStyle(
                                         color: Colors.grey.shade500,
                                       ),
