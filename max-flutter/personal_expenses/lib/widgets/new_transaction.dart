@@ -27,9 +27,9 @@ class NewTransaction extends StatelessWidget {
           textColor: Colors.purple,
           onPressed: () {
             handleAdd(
-                titleController.text, double.parse(amountController.text));
-            titleController.clear();
-            amountController.clear();
+              titleController.text,
+              double.parse(amountController.text),
+            );
           },
         ),
       ],
