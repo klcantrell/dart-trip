@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 
 typedef void HandleAdd(String title, double amount);
 
-class NewTransaction extends StatelessWidget {
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+class NewTransaction extends StatefulWidget {
   final HandleAdd handlePress;
 
   NewTransaction(this.handlePress);
+
+  @override
+  _NewTransactionState createState() => _NewTransactionState();
+}
+
+class _NewTransactionState extends State<NewTransaction> {
+  final titleController = TextEditingController();
+  final amountController = TextEditingController();
 
   void _submit() {
     final enteredTitle = titleController.text;
@@ -17,10 +23,12 @@ class NewTransaction extends StatelessWidget {
       return;
     }
 
-    handlePress(
+    widget.handlePress(
       enteredTitle,
       enteredAmount,
     );
+
+    Navigator.of(context).pop();
   }
 
   @override
