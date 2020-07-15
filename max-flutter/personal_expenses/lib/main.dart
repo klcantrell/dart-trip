@@ -114,18 +114,20 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView(
         children: [
           Container(
-            height: (MediaQuery.of(context).size.height * 0.4) -
-                appBar.preferredSize.height -
-                MediaQuery.of(context).padding.top,
+            height: (MediaQuery.of(context).size.height -
+                    appBar.preferredSize.height -
+                    MediaQuery.of(context).padding.top) *
+                0.3,
             child: Card(
               child: Chart(_recentTransactions),
               elevation: 5,
             ),
           ),
           Container(
-            height: (MediaQuery.of(context).size.height * 0.6) -
-                appBar.preferredSize.height -
-                MediaQuery.of(context).padding.top,
+            height: (MediaQuery.of(context).size.height -
+                    appBar.preferredSize.height -
+                    MediaQuery.of(context).padding.top) *
+                0.7,
             child: TransactionList(_userTransactions, _deleteTransaction),
           ),
         ],
