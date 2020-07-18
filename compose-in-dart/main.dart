@@ -3,7 +3,7 @@ void main() {
   int num(String word) => word.length;
   int addOne(int num) => num + 1;
 
-  var composed = pipe().from(appendExclamation).to(num).to(addOne);
+  var composed = pipe().to(appendExclamation).to(num).to(addOne);
 
   print(composed("wow"));
 }
@@ -11,7 +11,7 @@ void main() {
 PipeMaker pipe() => PipeMaker();
 
 class PipeMaker {
-  Pipe<T, U> from<T, U>(U Function(T) wrappedFn) => Pipe(wrappedFn);
+  Pipe<T, U> to<T, U>(U Function(T) wrappedFn) => Pipe(wrappedFn);
 }
 
 class Pipe<T, U> {
