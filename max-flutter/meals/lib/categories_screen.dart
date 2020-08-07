@@ -11,8 +11,10 @@ class CategoriesScreen extends StatelessWidget {
         title: Text('DeliApp'),
       ),
       body: GridView(
+        padding: const EdgeInsets.all(25),
         children: DUMMY_CATEGORIES
             .map((c) => CategoryItem(
+                  id: c.id,
                   color: c.color,
                   title: c.title,
                 ))
