@@ -1,16 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:meals/screens/settings_screen.dart';
-import 'package:meals/screens/tabs_screen.dart';
+
+import './models/dummy_data.dart';
+import './models/meal.dart';
 
 import './screens/categories_meals_screen.dart';
 import './screens/categories_screen.dart';
 import './screens/meal_detail_screen.dart';
+import './screens/settings_screen.dart';
+import './screens/tabs_screen.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Map<String, bool> _settings = {
+    'gluten': false,
+    'lactose': false,
+    'vegan': false,
+    'vegetarian': false,
+  };
+  List<Meal> _availableMeals = DUMMY_MEALS;
+
+  void _updateSettings(Map<String, bool> settingsData) {
+    setState(() {
+      _settings = settingsData;
+
+      _availableMeals = DUMMY_MEALS.where((meal) {
+        if (_settings['gluten']) {
+          return meal.isGlutenFree;
+        }
+        if (_settings['lactose']) {
+          return meal.isLactoseFree;
+        }
+        if (_settings['vegan']) {
+          return meal.isVegan;
+        }
+        if (_settings['vegetarian']) {
+          return meal.isVegetarian;
+        }
+        return true;
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,9 +75,11 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (_) => TabsScreen(),
-        CategoriesMealsScreens.routeName: (_) => CategoriesMealsScreens(),
-        MealDetailScreen.routeName: (_) => MealDetailScreen(),
-        SettingsScreen.routeName: (_) => SettingsScreen(),
+        CategoriesMealsScreens.routeName: (_) =>
+            CategoriesMealsScreens(_availableMeals),
+        MealDetailScreen.routeName: (_) => MealDetailScreen(_availableMeals),
+        SettingsScreen.routeName: (_) =>
+            SettingsScreen(_settings, _updateSettings),
       },
       onUnknownRoute: (_) =>
           MaterialPageRoute(builder: (_) => CategoriesScreen()),

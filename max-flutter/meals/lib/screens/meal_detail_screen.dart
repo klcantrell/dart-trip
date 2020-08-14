@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 
-import '../models/dummy_data.dart';
+import '../models/meal.dart';
 
 class MealDetailScreen extends StatelessWidget {
   static const routeName = '/meal-detail';
+
+  final List<Meal> _availableMeals;
+
+  MealDetailScreen(this._availableMeals);
 
   @override
   Widget build(BuildContext context) {
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, String>;
     final mealId = routeArgs['id'];
-    final selectedMeal = DUMMY_MEALS.firstWhere((meal) => meal.id == mealId);
+    final selectedMeal =
+        _availableMeals.firstWhere((meal) => meal.id == mealId);
     return Scaffold(
       appBar: AppBar(
         title: Text(selectedMeal.title),
