@@ -9,7 +9,6 @@ class MealItem extends StatelessWidget {
   final int duration;
   final Complexity complexity;
   final Affordability affordability;
-  final void Function(String) removeItem;
 
   MealItem({
     @required this.id,
@@ -18,7 +17,6 @@ class MealItem extends StatelessWidget {
     @required this.duration,
     @required this.complexity,
     @required this.affordability,
-    @required this.removeItem,
   });
 
   void selectMeal(BuildContext context) {
@@ -27,11 +25,7 @@ class MealItem extends StatelessWidget {
       arguments: {
         'id': id,
       },
-    ).then((mealId) {
-      if (mealId != null) {
-        removeItem(mealId);
-      }
-    });
+    );
   }
 
   String get complexityText {

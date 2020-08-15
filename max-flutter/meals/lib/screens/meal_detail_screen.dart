@@ -5,17 +5,22 @@ import '../models/meal.dart';
 class MealDetailScreen extends StatelessWidget {
   static const routeName = '/meal-detail';
 
-  final List<Meal> _availableMeals;
+  final List<Meal> availableMeals;
+  final void Function(String) toggleFavorite;
+  final bool Function(String) isFavorite;
 
-  MealDetailScreen(this._availableMeals);
+  MealDetailScreen({
+    @required this.availableMeals,
+    @required this.toggleFavorite,
+    @required this.isFavorite,
+  });
 
   @override
   Widget build(BuildContext context) {
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, String>;
     final mealId = routeArgs['id'];
-    final selectedMeal =
-        _availableMeals.firstWhere((meal) => meal.id == mealId);
+    final selectedMeal = availableMeals.firstWhere((meal) => meal.id == mealId);
     return Scaffold(
       appBar: AppBar(
         title: Text(selectedMeal.title),
@@ -100,8 +105,8 @@ class MealDetailScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.delete),
-        onPressed: () => Navigator.of(context).pop(mealId),
+        child: Icon(isFavorite(mealId) ? Icons.star : Icons.star_border),
+        onPressed: () => toggleFavorite(mealId),
       ),
     );
   }
