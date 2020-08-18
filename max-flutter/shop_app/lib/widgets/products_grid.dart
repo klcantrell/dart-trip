@@ -17,10 +17,9 @@ class ProductsGrid extends StatelessWidget {
       itemBuilder: (ctx, i) => GestureDetector(
         onTap: () => Navigator.of(context)
             .pushNamed(ProductDetail.routeName, arguments: products[i].id),
-        child: ProductItem(
-          id: products[i].id,
-          title: products[i].title,
-          imageUrl: products[i].imageUrl,
+        child: ChangeNotifierProvider(
+          create: (_) => products[i],
+          child: ProductItem(),
         ),
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
