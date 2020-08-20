@@ -6,10 +6,15 @@ import '../screens/product_detail.dart';
 import '../widgets/product_item.dart';
 
 class ProductsGrid extends StatelessWidget {
+  final bool showOnlyFavorites;
+
+  ProductsGrid({@required this.showOnlyFavorites});
+
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<ProductsProvider>(context);
-    final products = productsData.items;
+    final products =
+        showOnlyFavorites ? productsData.favorites : productsData.items;
 
     return GridView.builder(
       padding: EdgeInsets.all(10),
@@ -17,8 +22,8 @@ class ProductsGrid extends StatelessWidget {
       itemBuilder: (ctx, i) => GestureDetector(
         onTap: () => Navigator.of(context)
             .pushNamed(ProductDetail.routeName, arguments: products[i].id),
-        child: ChangeNotifierProvider(
-          create: (_) => products[i],
+        child: ChangeNotifierProvider.value(
+          value: products[i],
           child: ProductItem(),
         ),
       ),
