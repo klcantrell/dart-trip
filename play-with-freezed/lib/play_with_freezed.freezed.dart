@@ -259,3 +259,193 @@ class _$None<T> implements None<T> {
 abstract class None<T> implements Result<T> {
   const factory None() = _$None<T>;
 }
+
+class _$PersonTearOff {
+  const _$PersonTearOff();
+
+// ignore: unused_element
+  _Person call(
+      {String firstName,
+      String lastName,
+      int age,
+      String favoriteFood,
+      String zipcode}) {
+    return _Person(
+      firstName: firstName,
+      lastName: lastName,
+      age: age,
+      favoriteFood: favoriteFood,
+      zipcode: zipcode,
+    );
+  }
+}
+
+// ignore: unused_element
+const $Person = _$PersonTearOff();
+
+mixin _$Person {
+  String get firstName;
+  String get lastName;
+  int get age;
+  String get favoriteFood;
+  String get zipcode;
+
+  $PersonCopyWith<Person> get copyWith;
+}
+
+abstract class $PersonCopyWith<$Res> {
+  factory $PersonCopyWith(Person value, $Res Function(Person) then) =
+      _$PersonCopyWithImpl<$Res>;
+  $Res call(
+      {String firstName,
+      String lastName,
+      int age,
+      String favoriteFood,
+      String zipcode});
+}
+
+class _$PersonCopyWithImpl<$Res> implements $PersonCopyWith<$Res> {
+  _$PersonCopyWithImpl(this._value, this._then);
+
+  final Person _value;
+  // ignore: unused_field
+  final $Res Function(Person) _then;
+
+  @override
+  $Res call({
+    Object firstName = freezed,
+    Object lastName = freezed,
+    Object age = freezed,
+    Object favoriteFood = freezed,
+    Object zipcode = freezed,
+  }) {
+    return _then(_value.copyWith(
+      firstName: firstName == freezed ? _value.firstName : firstName as String,
+      lastName: lastName == freezed ? _value.lastName : lastName as String,
+      age: age == freezed ? _value.age : age as int,
+      favoriteFood: favoriteFood == freezed
+          ? _value.favoriteFood
+          : favoriteFood as String,
+      zipcode: zipcode == freezed ? _value.zipcode : zipcode as String,
+    ));
+  }
+}
+
+abstract class _$PersonCopyWith<$Res> implements $PersonCopyWith<$Res> {
+  factory _$PersonCopyWith(_Person value, $Res Function(_Person) then) =
+      __$PersonCopyWithImpl<$Res>;
+  @override
+  $Res call(
+      {String firstName,
+      String lastName,
+      int age,
+      String favoriteFood,
+      String zipcode});
+}
+
+class __$PersonCopyWithImpl<$Res> extends _$PersonCopyWithImpl<$Res>
+    implements _$PersonCopyWith<$Res> {
+  __$PersonCopyWithImpl(_Person _value, $Res Function(_Person) _then)
+      : super(_value, (v) => _then(v as _Person));
+
+  @override
+  _Person get _value => super._value as _Person;
+
+  @override
+  $Res call({
+    Object firstName = freezed,
+    Object lastName = freezed,
+    Object age = freezed,
+    Object favoriteFood = freezed,
+    Object zipcode = freezed,
+  }) {
+    return _then(_Person(
+      firstName: firstName == freezed ? _value.firstName : firstName as String,
+      lastName: lastName == freezed ? _value.lastName : lastName as String,
+      age: age == freezed ? _value.age : age as int,
+      favoriteFood: favoriteFood == freezed
+          ? _value.favoriteFood
+          : favoriteFood as String,
+      zipcode: zipcode == freezed ? _value.zipcode : zipcode as String,
+    ));
+  }
+}
+
+class _$_Person implements _Person {
+  _$_Person(
+      {this.firstName,
+      this.lastName,
+      this.age,
+      this.favoriteFood,
+      this.zipcode});
+
+  @override
+  final String firstName;
+  @override
+  final String lastName;
+  @override
+  final int age;
+  @override
+  final String favoriteFood;
+  @override
+  final String zipcode;
+
+  @override
+  String toString() {
+    return 'Person(firstName: $firstName, lastName: $lastName, age: $age, favoriteFood: $favoriteFood, zipcode: $zipcode)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is _Person &&
+            (identical(other.firstName, firstName) ||
+                const DeepCollectionEquality()
+                    .equals(other.firstName, firstName)) &&
+            (identical(other.lastName, lastName) ||
+                const DeepCollectionEquality()
+                    .equals(other.lastName, lastName)) &&
+            (identical(other.age, age) ||
+                const DeepCollectionEquality().equals(other.age, age)) &&
+            (identical(other.favoriteFood, favoriteFood) ||
+                const DeepCollectionEquality()
+                    .equals(other.favoriteFood, favoriteFood)) &&
+            (identical(other.zipcode, zipcode) ||
+                const DeepCollectionEquality().equals(other.zipcode, zipcode)));
+  }
+
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(firstName) ^
+      const DeepCollectionEquality().hash(lastName) ^
+      const DeepCollectionEquality().hash(age) ^
+      const DeepCollectionEquality().hash(favoriteFood) ^
+      const DeepCollectionEquality().hash(zipcode);
+
+  @override
+  _$PersonCopyWith<_Person> get copyWith =>
+      __$PersonCopyWithImpl<_Person>(this, _$identity);
+}
+
+abstract class _Person implements Person {
+  factory _Person(
+      {String firstName,
+      String lastName,
+      int age,
+      String favoriteFood,
+      String zipcode}) = _$_Person;
+
+  @override
+  String get firstName;
+  @override
+  String get lastName;
+  @override
+  int get age;
+  @override
+  String get favoriteFood;
+  @override
+  String get zipcode;
+  @override
+  _$PersonCopyWith<_Person> get copyWith;
+}

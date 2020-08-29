@@ -18,3 +18,40 @@ Result<int> readInput(List<String> args) {
   }
   return Some(firstArg);
 }
+
+@freezed
+abstract class Person with _$Person {
+  factory Person(
+      {String firstName,
+      String lastName,
+      int age,
+      String favoriteFood,
+      String zipcode}) = _Person;
+}
+
+extension PersonExtension on Person {
+  bool matches(Person other) {
+    return this ==
+        copyWith(
+            firstName: other.firstName ?? firstName,
+            lastName: other.lastName ?? lastName,
+            age: other.age ?? age,
+            favoriteFood: other.favoriteFood ?? favoriteFood,
+            zipcode: other.zipcode ?? zipcode);
+  }
+}
+
+class UnfreezedPerson {
+  final String firstName;
+  final String lastName;
+  final int age;
+  final String favoriteFood;
+  final String zipcode;
+
+  UnfreezedPerson(
+      {this.firstName,
+      this.lastName,
+      this.age,
+      this.favoriteFood,
+      this.zipcode});
+}
