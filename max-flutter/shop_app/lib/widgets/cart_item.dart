@@ -1,35 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/cart_provider.dart';
 
 class CartItem extends StatelessWidget {
+  final String productId;
   final String id;
   final double price;
   final int quantity;
   final String title;
 
   CartItem(
-      {@required this.id,
+      {@required this.productId,
+      @required this.id,
       @required this.price,
       @required this.quantity,
       @required this.title});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-      child: Padding(
-        padding: EdgeInsets.all(8),
-        child: ListTile(
-          leading: CircleAvatar(
-            child: Padding(
-              padding: EdgeInsets.all(5),
-              child: FittedBox(
-                child: Text('\$$price'),
+    return Dismissible(
+      key: ValueKey(id),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        final cart = Provider.of<CartProvider>(context, listen: false);
+        cart.removeItem(productId);
+      },
+      background: Container(
+        alignment: Alignment.centerRight,
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+        padding: EdgeInsets.only(right: 20),
+        color: Theme.of(context).errorColor,
+        child: Icon(
+          Icons.delete,
+          color: Colors.white,
+          size: 40,
+        ),
+      ),
+      child: Card(
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: ListTile(
+            leading: CircleAvatar(
+              child: Padding(
+                padding: EdgeInsets.all(5),
+                child: FittedBox(
+                  child: Text('\$$price'),
+                ),
               ),
             ),
+            title: Text(title),
+            subtitle: Text('Total: \$${price * quantity}'),
+            trailing: Text('$quantity x'),
           ),
-          title: Text(title),
-          subtitle: Text('Total: \$${price * quantity}'),
-          trailing: Text('$quantity x'),
         ),
       ),
     );
