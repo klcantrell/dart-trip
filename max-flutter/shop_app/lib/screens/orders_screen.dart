@@ -3,11 +3,14 @@ import 'package:provider/provider.dart';
 
 import '../providers/orders_provider.dart' show OrdersProvider;
 import '../widgets/order_item.dart';
+import '../widgets/app_drawer.dart';
 
 class OrdersScreen extends StatelessWidget {
+  static const routeName = '/orders';
+
   @override
   Widget build(BuildContext context) {
-    var orderProvider = Provider.of<OrdersProvider>(context);
+    final orderProvider = Provider.of<OrdersProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -19,6 +22,7 @@ class OrdersScreen extends StatelessWidget {
           order: orderProvider.orders[i],
         ),
       ),
+      drawer: AppDrawer(),
     );
   }
 }

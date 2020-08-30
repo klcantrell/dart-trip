@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../providers/cart_provider.dart';
+import '../providers/cart_provider.dart' show CartItem;
 
 class OrderItem {
   final String id;
@@ -18,7 +18,7 @@ class OrderItem {
 class OrdersProvider with ChangeNotifier {
   List<OrderItem> _orders = [];
 
-  List<OrderItem> get orders => [...orders];
+  List<OrderItem> get orders => [..._orders];
 
   void addOrder(List<CartItem> cartProducts, double total) {
     _orders.insert(
