@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
+import '../env.dart';
 import 'product_provider.dart';
 
 class ProductsProvider with ChangeNotifier {
@@ -51,6 +54,15 @@ class ProductsProvider with ChangeNotifier {
   }
 
   void addProduct(ProductProvider newProduct) {
+    var serializableProduct = {
+      'title': newProduct.title,
+      'description': newProduct.description,
+      'imageUrl': newProduct.imageUrl,
+      'price': newProduct.price,
+      'isFavorite': newProduct.isFavorite,
+    };
+    http.post(FIREBASE_URL, body: json.encode(serializableProduct));
+
     final product = ProductProvider(
       title: newProduct.title,
       description: newProduct.description,
