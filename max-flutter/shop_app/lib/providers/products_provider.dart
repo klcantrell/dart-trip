@@ -53,7 +53,7 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((product) => product.id == id);
   }
 
-  Future<void> addProduct(ProductProvider newProduct) {
+  addProduct(ProductProvider newProduct) async {
     var serializableProduct = {
       'title': newProduct.title,
       'description': newProduct.description,
@@ -61,23 +61,21 @@ class ProductsProvider with ChangeNotifier {
       'price': newProduct.price,
       'isFavorite': newProduct.isFavorite,
     };
-    return http
-        .post(
+    var response = await http.post(
       FIREBASE_URL,
       body: json.encode(serializableProduct),
-    )
-        .then((response) {
-      final product = ProductProvider(
-        title: newProduct.title,
-        description: newProduct.description,
-        imageUrl: newProduct.imageUrl,
-        price: newProduct.price,
-        id: json.decode(response.body)['name'],
-      );
+    );
 
-      _items.add(product);
-      notifyListeners();
-    });
+    final product = ProductProvider(
+      title: newProduct.title,
+      description: newProduct.description,
+      imageUrl: newProduct.imageUrl,
+      price: newProduct.price,
+      id: json.decode(response.body)['name'],
+    );
+
+    _items.add(product);
+    notifyListeners();
   }
 
   void updateProduct(String id, ProductProvider updatedProduct) {
