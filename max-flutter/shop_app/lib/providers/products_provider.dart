@@ -53,7 +53,12 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((product) => product.id == id);
   }
 
-  addProduct(ProductProvider newProduct) async {
+  Future<void> fetchAndSetProducts() async {
+    var response = await http.get(FIREBASE_URL);
+    print(json.decode(response.body));
+  }
+
+  Future<void> addProduct(ProductProvider newProduct) async {
     var serializableProduct = {
       'title': newProduct.title,
       'description': newProduct.description,
