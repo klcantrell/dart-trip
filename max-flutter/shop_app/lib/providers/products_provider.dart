@@ -54,8 +54,23 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    var response = await http.get(FIREBASE_URL);
-    print(json.decode(response.body));
+    final response = await http.get(FIREBASE_URL);
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    final List<ProductProvider> fetchedProducts = [];
+    data.forEach((productId, productData) {
+      fetchedProducts.add(
+        ProductProvider(
+          id: productId,
+          title: productData['title'],
+          description: productData['description'],
+          price: productData['price'],
+          isFavorite: productData['isFavorite'],
+          imageUrl: productData['imageUrl'],
+        ),
+      );
+    });
+    _items.addAll(fetchedProducts);
+    notifyListeners();
   }
 
   Future<void> addProduct(ProductProvider newProduct) async {
