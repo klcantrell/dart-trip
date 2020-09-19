@@ -69,7 +69,7 @@ class ProductsProvider with ChangeNotifier {
         ),
       );
     });
-    _items.addAll(fetchedProducts);
+    _items = fetchedProducts;
     notifyListeners();
   }
 
