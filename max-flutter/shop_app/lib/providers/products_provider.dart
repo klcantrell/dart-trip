@@ -116,7 +116,22 @@ class ProductsProvider with ChangeNotifier {
   }
 
   void deleteProduct(String id) {
-    _items.removeWhere((item) => item.id == id);
+    final existingProductIndex = _items.indexWhere((item) => item.id == id);
+    var existingProduct = _items[existingProductIndex];
+    http
+        .delete(
+      '$FIREBASE_URL/$id$FIREBASE_URL_EXTENSION...',
+    )
+        .then((response) {
+      if (response.statusCode >= 400) {
+        throw Exception();
+      }
+      existingProduct = null;
+    }).catchError((_) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+    });
+    _items.removeAt(existingProductIndex);
     notifyListeners();
   }
 }
