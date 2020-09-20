@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../env.dart';
 import 'product_provider.dart';
+import '../models/http_exception.dart';
 
 class ProductsProvider with ChangeNotifier {
   List<ProductProvider> _items = [
@@ -115,23 +116,19 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     final existingProductIndex = _items.indexWhere((item) => item.id == id);
     var existingProduct = _items[existingProductIndex];
-    http
-        .delete(
-      '$FIREBASE_URL/$id$FIREBASE_URL_EXTENSION...',
-    )
-        .then((response) {
-      if (response.statusCode >= 400) {
-        throw Exception();
-      }
-      existingProduct = null;
-    }).catchError((_) {
-      _items.insert(existingProductIndex, existingProduct);
-      notifyListeners();
-    });
     _items.removeAt(existingProductIndex);
     notifyListeners();
+    final response = await http.delete(
+      '$FIREBASE_URL/$id$FIREBASE_URL_EXTENSION...',
+    );
+    if (response.statusCode >= 400) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+      throw HttpException('Could not delete product.');
+    }
+    existingProduct = null;
   }
 }
