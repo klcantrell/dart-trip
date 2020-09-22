@@ -55,7 +55,8 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    final response = await http.get('$FIREBASE_URL$FIREBASE_URL_EXTENSION');
+    final response = await http
+        .get('$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION');
     final data = json.decode(response.body) as Map<String, dynamic>;
     final List<ProductProvider> fetchedProducts = [];
     data.forEach((productId, productData) {
@@ -83,7 +84,7 @@ class ProductsProvider with ChangeNotifier {
       'isFavorite': newProduct.isFavorite,
     };
     var response = await http.post(
-      '$FIREBASE_URL$FIREBASE_URL_EXTENSION',
+      '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION',
       body: json.encode(serializableProduct),
     );
 
@@ -103,7 +104,7 @@ class ProductsProvider with ChangeNotifier {
     final existingProductIndex = _items.indexWhere((item) => item.id == id);
     if (existingProductIndex >= 0) {
       await http.patch(
-        '$FIREBASE_URL/$id$FIREBASE_URL_EXTENSION',
+        '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH/$id$FIREBASE_URL_EXTENSION',
         body: json.encode({
           'title': updatedProduct.title,
           'description': updatedProduct.description,
@@ -122,7 +123,7 @@ class ProductsProvider with ChangeNotifier {
     _items.removeAt(existingProductIndex);
     notifyListeners();
     final response = await http.delete(
-      '$FIREBASE_URL/$id$FIREBASE_URL_EXTENSION...',
+      '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH/$id$FIREBASE_URL_EXTENSION',
     );
     if (response.statusCode >= 400) {
       _items.insert(existingProductIndex, existingProduct);

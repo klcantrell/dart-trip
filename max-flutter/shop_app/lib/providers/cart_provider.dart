@@ -79,7 +79,6 @@ class CartProvider with ChangeNotifier {
         ),
       );
     } else {
-      print("Uh");
       _items.remove(productId);
     }
     notifyListeners();

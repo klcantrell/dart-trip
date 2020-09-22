@@ -32,8 +32,8 @@ class ProductItem extends StatelessWidget {
               icon: Icon(productProvider.isFavorite
                   ? Icons.favorite
                   : Icons.favorite_border),
-              onPressed: () {
-                productProvider.toggleIsFavorite();
+              onPressed: () async {
+                await productProvider.toggleIsFavorite();
               },
               color: Theme.of(context).accentColor,
             ),

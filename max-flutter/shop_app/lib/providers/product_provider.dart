@@ -1,4 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../env.dart';
+import '../models/http_exception.dart';
 
 class ProductProvider with ChangeNotifier {
   final String id;
@@ -17,8 +22,21 @@ class ProductProvider with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggleIsFavorite() {
+  Future<void> toggleIsFavorite() async {
     isFavorite = !isFavorite;
     notifyListeners();
+
+    final response = await http.patch(
+      '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH/$id$FIREBASE_URL_EXTENSION...',
+      body: json.encode({
+        'isFavorite': isFavorite,
+      }),
+    );
+
+    if (response.statusCode >= 400) {
+      isFavorite = !isFavorite;
+      notifyListeners();
+      throw HttpException('Could not update favorite status');
+    }
   }
 }
