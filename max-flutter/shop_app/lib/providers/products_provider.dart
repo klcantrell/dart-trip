@@ -59,7 +59,7 @@ class ProductsProvider with ChangeNotifier {
         .get('$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION');
     final data = json.decode(response.body) as Map<String, dynamic>;
     final List<ProductProvider> fetchedProducts = [];
-    data.forEach((productId, productData) {
+    data?.forEach((productId, productData) {
       fetchedProducts.add(
         ProductProvider(
           id: productId,

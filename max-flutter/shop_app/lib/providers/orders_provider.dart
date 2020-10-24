@@ -23,6 +23,35 @@ class OrdersProvider with ChangeNotifier {
 
   List<OrderItem> get orders => [..._orders];
 
+  Future<void> fetchAndSetOrders() async {
+    final response = await http
+        .get('$FIREBASE_URL/$FIREBASE_ORDERS_PATH$FIREBASE_URL_EXTENSION');
+
+    final List<OrderItem> loadedOrders = [];
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    data?.forEach((orderId, orderData) {
+      loadedOrders.add(
+        OrderItem(
+          id: orderId,
+          amount: orderData['amount'],
+          products: (orderData['products'] as List<dynamic>)
+              .map(
+                (item) => CartItem(
+                  id: item['id'],
+                  price: item['price'],
+                  quantity: item['quantity'],
+                  title: item['title'],
+                ),
+              )
+              .toList(),
+          dateTime: DateTime.parse(orderData['dateTime']),
+        ),
+      );
+    });
+    _orders = loadedOrders.reversed.toList();
+    notifyListeners();
+  }
+
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     var now = DateTime.now();
     var serializableOrder = {
