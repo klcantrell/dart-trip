@@ -89,7 +89,7 @@ class ProductsProvider with ChangeNotifier {
       'isFavorite': newProduct.isFavorite,
     };
     var response = await http.post(
-      '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION',
+      '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken',
       body: json.encode(serializableProduct),
     );
 
@@ -107,9 +107,11 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> updateProduct(String id, ProductProvider updatedProduct) async {
     final existingProductIndex = _items.indexWhere((item) => item.id == id);
+    final url =
+        '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken';
     if (existingProductIndex >= 0) {
       await http.patch(
-        '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH/$id$FIREBASE_URL_EXTENSION',
+        url,
         body: json.encode({
           'title': updatedProduct.title,
           'description': updatedProduct.description,
@@ -124,11 +126,13 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final existingProductIndex = _items.indexWhere((item) => item.id == id);
+    final url =
+        '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken';
     var existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);
     notifyListeners();
     final response = await http.delete(
-      '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH/$id$FIREBASE_URL_EXTENSION',
+      url,
     );
     if (response.statusCode >= 400) {
       _items.insert(existingProductIndex, existingProduct);

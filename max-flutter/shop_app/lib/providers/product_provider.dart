@@ -22,12 +22,12 @@ class ProductProvider with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleIsFavorite() async {
+  Future<void> toggleIsFavorite(String authToken) async {
     isFavorite = !isFavorite;
     notifyListeners();
 
     final response = await http.patch(
-      '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH/$id$FIREBASE_URL_EXTENSION...',
+      '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH/$id$FIREBASE_URL_EXTENSION?auth=$authToken',
       body: json.encode({
         'isFavorite': isFavorite,
       }),

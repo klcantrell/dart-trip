@@ -20,12 +20,16 @@ class OrderItem {
 
 class OrdersProvider with ChangeNotifier {
   List<OrderItem> _orders = [];
+  final String authToken;
+
+  OrdersProvider(this.authToken, this._orders);
 
   List<OrderItem> get orders => [..._orders];
 
   Future<void> fetchAndSetOrders() async {
-    final response = await http
-        .get('$FIREBASE_URL/$FIREBASE_ORDERS_PATH$FIREBASE_URL_EXTENSION');
+    final url =
+        '$FIREBASE_URL/$FIREBASE_ORDERS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken';
+    final response = await http.get(url);
 
     final List<OrderItem> loadedOrders = [];
     final data = json.decode(response.body) as Map<String, dynamic>;
@@ -69,7 +73,7 @@ class OrdersProvider with ChangeNotifier {
       'dateTime': now.toIso8601String(),
     };
     var response = await http.post(
-        '$FIREBASE_URL/$FIREBASE_ORDERS_PATH$FIREBASE_URL_EXTENSION',
+        '$FIREBASE_URL/$FIREBASE_ORDERS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken',
         body: json.encode(serializableOrder));
 
     _orders.insert(
