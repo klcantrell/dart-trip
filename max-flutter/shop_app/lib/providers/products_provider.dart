@@ -7,6 +7,10 @@ import 'product_provider.dart';
 import '../models/http_exception.dart';
 
 class ProductsProvider with ChangeNotifier {
+  final String authToken;
+
+  ProductsProvider(this.authToken, this._items);
+
   List<ProductProvider> _items = [
     ProductProvider(
       id: 'p1',
@@ -55,8 +59,9 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    final response = await http
-        .get('$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION');
+    final url =
+        '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken';
+    final response = await http.get(url);
     final data = json.decode(response.body) as Map<String, dynamic>;
     final List<ProductProvider> fetchedProducts = [];
     data?.forEach((productId, productData) {
