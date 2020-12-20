@@ -15,13 +15,13 @@ class AuthProvider with ChangeNotifier {
   }
 
   String get token {
-    if (_expiryDate != null &&
-        _expiryDate.isAfter(DateTime.now()) &&
-        _token != null) {
+    if (_expiryDate?.isAfter(DateTime.now()) ?? false) {
       return _token;
     }
     return null;
   }
+
+  String get userId => _userId;
 
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {

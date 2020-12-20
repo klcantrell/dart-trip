@@ -11,13 +11,11 @@ class UserProductsScreen extends StatelessWidget {
 
   Future<void> _refreshProducts(BuildContext context) async {
     await Provider.of<ProductsProvider>(context, listen: false)
-        .fetchAndSetProducts();
+        .fetchAndSetProducts(filterByUser: true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsProvider = Provider.of<ProductsProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -34,24 +32,31 @@ class UserProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProducts(context),
-        child: Padding(
-          padding: EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: productsProvider.items.length,
-            itemBuilder: (ctx, i) => Column(
-              children: [
-                UserProductItem(
-                  title: productsProvider.items[i].title,
-                  imageUrl: productsProvider.items[i].imageUrl,
-                  id: productsProvider.items[i].id,
+      body: FutureBuilder(
+        future: _refreshProducts(context),
+        builder: (ctx, data) => data.connectionState == ConnectionState.waiting
+            ? Center(child: CircularProgressIndicator())
+            : RefreshIndicator(
+                onRefresh: () => _refreshProducts(context),
+                child: Consumer<ProductsProvider>(
+                  builder: (ctx, productsProvider, child) => Padding(
+                    padding: EdgeInsets.all(8),
+                    child: ListView.builder(
+                      itemCount: productsProvider.items.length,
+                      itemBuilder: (ctx, i) => Column(
+                        children: [
+                          UserProductItem(
+                            title: productsProvider.items[i].title,
+                            imageUrl: productsProvider.items[i].imageUrl,
+                            id: productsProvider.items[i].id,
+                          ),
+                          Divider(),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                Divider(),
-              ],
-            ),
-          ),
-        ),
+              ),
       ),
     );
   }

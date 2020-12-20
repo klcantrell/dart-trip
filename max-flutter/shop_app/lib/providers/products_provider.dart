@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../env.dart';
-import 'product_provider.dart';
+import './product_provider.dart';
 import '../models/http_exception.dart';
+
+const FIREBASE_PRODUCTS_PATH = 'products';
 
 class ProductsProvider with ChangeNotifier {
   final String authToken;
+  final String userId;
 
-  ProductsProvider(this.authToken, this._items);
+  ProductsProvider(this.authToken, this.userId, this._items);
 
   List<ProductProvider> _items = [
     ProductProvider(
@@ -58,20 +61,32 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((product) => product.id == id);
   }
 
-  Future<void> fetchAndSetProducts() async {
-    final url =
-        '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken';
-    final response = await http.get(url);
-    final data = json.decode(response.body) as Map<String, dynamic>;
+  Future<void> fetchAndSetProducts({bool filterByUser = false}) async {
+    final filterString =
+        filterByUser ? '&orderBy="creatorId"&equalTo="$userId"' : '';
+    final productsUrl =
+        '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken$filterString';
+    final productsResponse = await http.get(productsUrl);
+    final productsData =
+        json.decode(productsResponse.body) as Map<String, dynamic>;
+
+    final favoritesUrl =
+        '$FIREBASE_URL/$FIREBASE_FAVORITES_PATH/$userId/$FIREBASE_URL_EXTENSION?auth=$authToken';
+    final favoritesResponse = await http.get(favoritesUrl);
+    final favoritesData =
+        json.decode(favoritesResponse.body) as Map<String, dynamic>;
+
     final List<ProductProvider> fetchedProducts = [];
-    data?.forEach((productId, productData) {
+    productsData?.forEach((productId, productData) {
       fetchedProducts.add(
         ProductProvider(
           id: productId,
           title: productData['title'],
           description: productData['description'],
           price: productData['price'],
-          isFavorite: productData['isFavorite'],
+          isFavorite: favoritesData != null
+              ? (favoritesData[productId] ?? false)
+              : false,
           imageUrl: productData['imageUrl'],
         ),
       );
@@ -86,7 +101,7 @@ class ProductsProvider with ChangeNotifier {
       'description': newProduct.description,
       'imageUrl': newProduct.imageUrl,
       'price': newProduct.price,
-      'isFavorite': newProduct.isFavorite,
+      'creatorId': userId,
     };
     var response = await http.post(
       '$FIREBASE_URL/$FIREBASE_PRODUCTS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken',

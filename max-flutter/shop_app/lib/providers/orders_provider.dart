@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import '../providers/cart_provider.dart' show CartItem;
 import '../env.dart';
 
+const FIREBASE_ORDERS_PATH = 'orders';
+
 class OrderItem {
   final String id;
   final double amount;

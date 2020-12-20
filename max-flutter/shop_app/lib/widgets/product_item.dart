@@ -10,7 +10,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final productProvider = Provider.of<ProductProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    final authProvder = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -35,7 +35,8 @@ class ProductItem extends StatelessWidget {
                   ? Icons.favorite
                   : Icons.favorite_border),
               onPressed: () async {
-                await productProvider.toggleIsFavorite(authProvder.token);
+                await productProvider.toggleIsFavorite(
+                    authProvider.token, authProvider.userId);
               },
               color: Theme.of(context).accentColor,
             ),
