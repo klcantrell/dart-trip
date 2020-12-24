@@ -23,14 +23,15 @@ class OrderItem {
 class OrdersProvider with ChangeNotifier {
   List<OrderItem> _orders = [];
   final String authToken;
+  final String userId;
 
-  OrdersProvider(this.authToken, this._orders);
+  OrdersProvider(this.authToken, this.userId, this._orders);
 
   List<OrderItem> get orders => [..._orders];
 
   Future<void> fetchAndSetOrders() async {
     final url =
-        '$FIREBASE_URL/$FIREBASE_ORDERS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken';
+        '$FIREBASE_URL/$FIREBASE_ORDERS_PATH$userId/$FIREBASE_URL_EXTENSION?auth=$authToken';
     final response = await http.get(url);
 
     final List<OrderItem> loadedOrders = [];
@@ -75,7 +76,7 @@ class OrdersProvider with ChangeNotifier {
       'dateTime': now.toIso8601String(),
     };
     var response = await http.post(
-        '$FIREBASE_URL/$FIREBASE_ORDERS_PATH$FIREBASE_URL_EXTENSION?auth=$authToken',
+        '$FIREBASE_URL/$FIREBASE_ORDERS_PATH$userId/$FIREBASE_URL_EXTENSION?auth=$authToken',
         body: json.encode(serializableOrder));
 
     _orders.insert(
