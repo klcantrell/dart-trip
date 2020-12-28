@@ -102,7 +102,6 @@ class _AuthCardState extends State<AuthCard>
 
   @override
   void initState() {
-    super.initState();
     _animationController = new AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 300),
@@ -117,7 +116,8 @@ class _AuthCardState extends State<AuthCard>
         curve: Curves.fastOutSlowIn,
       ),
     );
-    _heightAnimation.addListener(() => setState(() {}));
+
+    super.initState();
   }
 
   @override
@@ -211,11 +211,15 @@ class _AuthCardState extends State<AuthCard>
         borderRadius: BorderRadius.circular(10.0),
       ),
       elevation: 8.0,
-      child: Container(
-        height: _heightAnimation.value.height,
-        constraints: BoxConstraints(minHeight: _heightAnimation.value.height),
-        width: deviceSize.width * 0.75,
-        padding: EdgeInsets.all(16.0),
+      child: AnimatedBuilder(
+        animation: _heightAnimation,
+        builder: (ctx, builderChild) => Container(
+          height: _heightAnimation.value.height,
+          constraints: BoxConstraints(minHeight: _heightAnimation.value.height),
+          width: deviceSize.width * 0.75,
+          padding: EdgeInsets.all(16.0),
+          child: builderChild,
+        ),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
