@@ -19,7 +19,6 @@ class _OrderItemState extends State<OrderItem>
 
   AnimationController _animationController;
   Animation<double> _opacityAnimation;
-  Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
@@ -31,13 +30,6 @@ class _OrderItemState extends State<OrderItem>
     _opacityAnimation = Tween(
       begin: 0.0,
       end: 1.0,
-    ).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
-    );
-
-    _slideAnimation = Tween(
-      begin: Offset(0, -1.5),
-      end: Offset(0, 0),
     ).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
     );
