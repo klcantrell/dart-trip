@@ -13,9 +13,6 @@ class ProductDetail extends StatelessWidget {
         Provider.of<ProductsProvider>(context, listen: false).findById(id);
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(product.title),
-      // ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
