@@ -35,7 +35,6 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).padding.bottom);
     return Scaffold(
       appBar: AppBar(
         title: Text('Add a New Place'),

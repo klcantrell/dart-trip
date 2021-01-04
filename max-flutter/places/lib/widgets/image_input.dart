@@ -24,6 +24,10 @@ class _ImageInputState extends State<ImageInput> {
       source: ImageSource.camera,
       maxWidth: 600,
     );
+    if (pickedImageFile == null) {
+      print('No image taken, skipping save image.');
+      return;
+    }
     final imageFile = File(pickedImageFile.path);
 
     setState(() {
