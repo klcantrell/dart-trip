@@ -23,6 +23,9 @@ Future<sql.Database> _database() async {
       onCreate: (db, version) => db.execute('''create table user_places(
             id text primary key,
             title text, 
-            image text
+            image text,
+            location_latitude real,
+            location_longitude real,
+            location_address text
         )'''), version: 1);
 }

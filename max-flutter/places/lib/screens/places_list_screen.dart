@@ -40,6 +40,8 @@ class PlacesListScreen extends StatelessWidget {
                                       FileImage(placesProvider.items[i].image),
                                 ),
                                 title: Text(placesProvider.items[i].title),
+                                subtitle: Text(
+                                    placesProvider.items[i].location.address),
                                 onTap: () {},
                               ),
                             ),
