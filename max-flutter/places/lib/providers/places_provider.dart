@@ -11,6 +11,8 @@ class PlacesProvider with ChangeNotifier {
 
   List<Place> get items => [..._items];
 
+  Place findById(String id) => _items.firstWhere((place) => place.id == id);
+
   void addPlace(
       String pickedTitle, File pickedImage, Location selectedLocation) async {
     final address = await LocationHelper.getLocationAddress(
