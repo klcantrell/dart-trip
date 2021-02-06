@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "625769081828",
+    "project_id": "maxflutterchat-7b96a",
+    "storage_bucket": "maxflutterchat-7b96a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625769081828:android:deeebeccc247e59e8a75f1",
+        "android_client_info": {
+          "package_name": "com.cantrell.kal.max_flutter_chat_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625769081828-iluhrac1l2dn6mvg2l9ppglci8b6v8c1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMRZttozkcP7azbX4kQD9IQxQPu2sUKRA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625769081828-iluhrac1l2dn6mvg2l9ppglci8b6v8c1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
