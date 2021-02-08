@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:625769081828:android:deeebeccc247e59e8a75f1",
+        "mobilesdk_app_id": "1:625769081828:android:3bbd8a9ea223016e8a75f1",
         "android_client_info": {
           "package_name": "com.cantrell.kal.max_flutter_chat_app"
         }
@@ -20,7 +20,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCMRZttozkcP7azbX4kQD9IQxQPu2sUKRA"
+          "current_key": "REDACTED"
         }
       ],
       "services": {
@@ -29,6 +29,13 @@
             {
               "client_id": "625769081828-iluhrac1l2dn6mvg2l9ppglci8b6v8c1.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "625769081828-dnbpv4ipdq59i10od3057u8q9mloq9fi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cantrell.kal.maxFlutterChatApp"
+              }
             }
           ]
         }
