@@ -17,6 +17,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
+    super.initState();
     _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.configure(
       onMessage: (message) {
@@ -35,7 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
         return;
       },
     );
-    super.initState();
+    _firebaseMessaging.subscribeToTopic('chat');
   }
 
   @override

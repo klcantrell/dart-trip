@@ -88,6 +88,9 @@ class _AuthFormState extends State<AuthForm> {
                   if (_loginState == LoginState.Signup)
                     UserImagePicker(onImagePicked: _onImagePicked),
                   TextFormField(
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
+                    enableSuggestions: false,
                     key: ValueKey('email'),
                     validator: (value) {
                       if (value.isEmpty || !value.contains('@')) {
@@ -105,6 +108,9 @@ class _AuthFormState extends State<AuthForm> {
                   ),
                   if (_loginState != LoginState.Login)
                     TextFormField(
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      enableSuggestions: false,
                       key: ValueKey('username'),
                       validator: (value) {
                         if (value.isEmpty || value.length < 4) {
