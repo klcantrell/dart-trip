@@ -1,23 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
 
+final loggedInProvider = StateProvider((ref) => true);
+
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loggedIn = ref.watch(loggedInProvider);
 
-class _MyAppState extends State<MyApp> {
-  var toggle = 0;
-
-  @override
-  Widget build(BuildContext context) {
     final loggedInRoutes = RouteMap(routes: {
       '/': (route) => const CupertinoTabPage(
             child: MyHomePage(),
@@ -32,11 +30,9 @@ class _MyAppState extends State<MyApp> {
                     children: [
                       const Text('Home'),
                       TextButton(
-                        child: const Text('Toggle'),
+                        child: const Text('Log out'),
                         onPressed: () {
-                          setState(() {
-                            toggle = toggle == 1 ? 0 : 1;
-                          });
+                          ref.read(loggedInProvider.state).state = false;
                         },
                       ),
                     ],
@@ -58,12 +54,18 @@ class _MyAppState extends State<MyApp> {
     });
 
     final loggedOutRoutes = RouteMap(routes: {
-      '/home': (route) => MaterialPage(
+      '/home': (route) => TransitionPage(
+            pushTransition: PageTransition.none,
             child: Scaffold(
-              appBar: AppBar(title: const Text('Toggle is 1')),
-              body: const SafeArea(
+              appBar: AppBar(title: const Text('Logged out!')),
+              body: SafeArea(
                 child: Center(
-                  child: Text('Toggle is 1'),
+                  child: TextButton(
+                    onPressed: () {
+                      ref.read(loggedInProvider.state).state = true;
+                    },
+                    child: const Text('Log in'),
+                  ),
                 ),
               ),
             ),
@@ -77,8 +79,7 @@ class _MyAppState extends State<MyApp> {
         fontFamily: 'ProximaNova',
       ),
       routerDelegate: RoutemasterDelegate(
-        routesBuilder: (context) =>
-            toggle == 0 ? loggedInRoutes : loggedOutRoutes,
+        routesBuilder: (context) => loggedIn ? loggedInRoutes : loggedOutRoutes,
       ),
       routeInformationParser: const RoutemasterParser(),
       debugShowCheckedModeBanner: false,
