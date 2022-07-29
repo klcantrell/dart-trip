@@ -32,37 +32,64 @@ class MyApp extends ConsumerWidget {
           }),
           stackedRoutes: [
             VNester(
-                widgetBuilder: (child) => MyHomePage(child: child),
-                path: '/',
-                nestedRoutes: [
-                  VWidget(
-                    path: null,
-                    widget: const TodayPage(),
-                    transitionDuration: const Duration(milliseconds: 0),
-                  ),
-                  VWidget(
-                    path: '/history',
-                    widget: const HistoryPage(),
-                    aliases: const ['/history/details'],
-                    transitionDuration: const Duration(milliseconds: 0),
-                  ),
-                ],
-                stackedRoutes: [
-                  VWidget(
-                    fullscreenDialog: false,
-                    path: '/history/details',
-                    widget: const HistoryDetailsPage(),
-                    buildTransition: (animation, secondaryAnimation, child) {
-                      final tween =
-                          Tween(begin: const Offset(0.0, 1.0), end: Offset.zero)
-                              .chain(CurveTween(curve: Curves.ease));
-                      return SlideTransition(
-                        position: animation.drive(tween),
-                        child: child,
-                      );
-                    },
-                  )
-                ]),
+              widgetBuilder: (child) => MainPage(child: child),
+              path: '/',
+              nestedRoutes: [
+                VWidget(
+                  path: null,
+                  widget: const HomePage(),
+                  transitionDuration: const Duration(milliseconds: 0),
+                ),
+                VWidget(
+                  path: '/workflow',
+                  widget: const WorkflowPage(),
+                  aliases: const ['/workflow/step1', '/workflow/step2'],
+                  transitionDuration: const Duration(milliseconds: 0),
+                ),
+              ],
+              stackedRoutes: [
+                VWidget(
+                  path: '/workflow/step1',
+                  widget: const WorkflowStep1Page(),
+                  buildTransition: (animation, secondaryAnimation, child) {
+                    final tween =
+                        Tween(begin: const Offset(0.0, 1.0), end: Offset.zero)
+                            .chain(CurveTween(curve: Curves.ease));
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  },
+                  stackedRoutes: [
+                    VWidget(
+                      path: '/workflow/step2',
+                      widget: const WorkflowStep2Page(),
+                      // buildTransition: (animation, secondaryAnimation, child) {
+                      //   if (animation.status == AnimationStatus.reverse) {
+                      //     final tween = Tween(
+                      //             begin: const Offset(0.0, 1.0),
+                      //             end: Offset.zero)
+                      //         .chain(CurveTween(curve: Curves.ease));
+                      //     return SlideTransition(
+                      //       position: animation.drive(tween),
+                      //       child: child,
+                      //     );
+                      //   } else {
+                      //     final tween = Tween(
+                      //             begin: const Offset(1.0, 0.0),
+                      //             end: Offset.zero)
+                      //         .chain(CurveTween(curve: Curves.ease));
+                      //     return SlideTransition(
+                      //       position: animation.drive(tween),
+                      //       child: child,
+                      //     );
+                      //   }
+                      // },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ],
         ),
         VWidget(
@@ -78,16 +105,16 @@ class MyApp extends ConsumerWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.child}) : super(key: key);
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key, required this.child}) : super(key: key);
 
   final Widget child;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,11 +123,11 @@ class _MyHomePageState extends State<MyHomePage> {
         currentIndex: context.vRouter.path == '/' ? 0 : 1,
         items: const [
           BottomNavigationBarItem(
-            label: 'Today',
+            label: 'Home',
             icon: Icon(CupertinoIcons.home),
           ),
           BottomNavigationBarItem(
-            label: 'History',
+            label: 'Workflow',
             icon: Icon(CupertinoIcons.drop),
           ),
         ],
@@ -108,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
           if (index == 0) {
             context.vRouter.to('/');
           } else {
-            context.vRouter.to('/history');
+            context.vRouter.to('/workflow');
           }
         },
       ),
@@ -116,8 +143,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class TodayPage extends ConsumerWidget {
-  const TodayPage({Key? key}) : super(key: key);
+class HomePage extends ConsumerWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -160,8 +187,8 @@ class LoginPage extends ConsumerWidget {
   }
 }
 
-class HistoryPage extends StatelessWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+class WorkflowPage extends StatelessWidget {
+  const WorkflowPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -169,11 +196,11 @@ class HistoryPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('History'),
+          const Text('Workflow'),
           TextButton(
-            child: const Text('See more'),
+            child: const Text('Do it'),
             onPressed: () {
-              context.vRouter.to('/history/details');
+              context.vRouter.to('/workflow/step1');
             },
           ),
         ],
@@ -182,8 +209,8 @@ class HistoryPage extends StatelessWidget {
   }
 }
 
-class HistoryDetailsPage extends StatelessWidget {
-  const HistoryDetailsPage({Key? key}) : super(key: key);
+class WorkflowStep1Page extends StatelessWidget {
+  const WorkflowStep1Page({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +221,7 @@ class HistoryDetailsPage extends StatelessWidget {
             Positioned(
               child: IconButton(
                 onPressed: () {
-                  context.vRouter.historyBack();
+                  context.vRouter.to('/workflow', isReplacement: true);
                 },
                 icon: const Icon(
                   Icons.close,
@@ -202,8 +229,64 @@ class HistoryDetailsPage extends StatelessWidget {
                 ),
               ),
             ),
-            const Center(
-              child: Text('History details'),
+            Column(
+              children: [
+                const Center(
+                  child: Text('Step 1'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.vRouter.to('/workflow/step2');
+                  },
+                  child: const Text('Next'),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class WorkflowStep2Page extends StatelessWidget {
+  const WorkflowStep2Page({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Positioned(
+              child: IconButton(
+                onPressed: () {
+                  context.vRouter.to('/workflow', isReplacement: true);
+                },
+                icon: const Icon(
+                  Icons.close,
+                  size: 35,
+                ),
+              ),
+            ),
+            Column(
+              children: [
+                const Center(
+                  child: Text('Step 1'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.vRouter.historyGo(-1);
+                  },
+                  child: const Text('Previous'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.vRouter.to('/workflow', isReplacement: true);
+                  },
+                  child: const Text('Done'),
+                )
+              ],
             ),
           ],
         ),
