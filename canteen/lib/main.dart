@@ -43,51 +43,28 @@ class MyApp extends ConsumerWidget {
                 VWidget(
                   path: '/workflow',
                   widget: const WorkflowPage(),
-                  aliases: const ['/workflow/step1', '/workflow/step2'],
+                  aliases: const ['/workflow/steps/1', '/workflow/steps/2'],
                   transitionDuration: const Duration(milliseconds: 0),
                 ),
               ],
               stackedRoutes: [
-                VWidget(
-                  path: '/workflow/step1',
-                  widget: const WorkflowStep1Page(),
-                  buildTransition: (animation, secondaryAnimation, child) {
-                    final tween =
-                        Tween(begin: const Offset(0.0, 1.0), end: Offset.zero)
-                            .chain(CurveTween(curve: Curves.ease));
-                    return SlideTransition(
-                      position: animation.drive(tween),
-                      child: child,
-                    );
-                  },
-                  stackedRoutes: [
+                VNester(
+                  fullscreenDialog: true,
+                  path: '/workflow/steps',
+                  widgetBuilder: (child) => child,
+                  nestedRoutes: [
                     VWidget(
-                      path: '/workflow/step2',
-                      widget: const WorkflowStep2Page(),
-                      // buildTransition: (animation, secondaryAnimation, child) {
-                      //   if (animation.status == AnimationStatus.reverse) {
-                      //     final tween = Tween(
-                      //             begin: const Offset(0.0, 1.0),
-                      //             end: Offset.zero)
-                      //         .chain(CurveTween(curve: Curves.ease));
-                      //     return SlideTransition(
-                      //       position: animation.drive(tween),
-                      //       child: child,
-                      //     );
-                      //   } else {
-                      //     final tween = Tween(
-                      //             begin: const Offset(1.0, 0.0),
-                      //             end: Offset.zero)
-                      //         .chain(CurveTween(curve: Curves.ease));
-                      //     return SlideTransition(
-                      //       position: animation.drive(tween),
-                      //       child: child,
-                      //     );
-                      //   }
-                      // },
+                      path: '/workflow/steps/1',
+                      widget: const WorkflowStep1Page(),
+                      stackedRoutes: [
+                        VWidget(
+                          path: '/workflow/steps/2',
+                          widget: const WorkflowStep2Page(),
+                        ),
+                      ],
                     ),
                   ],
-                ),
+                )
               ],
             ),
           ],
@@ -200,7 +177,7 @@ class WorkflowPage extends StatelessWidget {
           TextButton(
             child: const Text('Do it'),
             onPressed: () {
-              context.vRouter.to('/workflow/step1');
+              context.vRouter.to('/workflow/steps/1');
             },
           ),
         ],
@@ -236,7 +213,7 @@ class WorkflowStep1Page extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    context.vRouter.to('/workflow/step2');
+                    context.vRouter.to('/workflow/steps/2');
                   },
                   child: const Text('Next'),
                 )
