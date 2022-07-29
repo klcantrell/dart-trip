@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:vrouter/vrouter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:routemaster/routemaster.dart';
 
-final loggedInProvider = StateProvider((ref) => true);
+final loggedInProvider = StateProvider((ref) => false);
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -14,81 +14,74 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loggedIn = ref.watch(loggedInProvider);
-
-    final loggedInRoutes = RouteMap(routes: {
-      '/': (route) => const CupertinoTabPage(
-            child: MyHomePage(),
-            paths: ['/home', '/history'],
-          ),
-      '/home': (route) => MaterialPage(
-            child: Scaffold(
-              appBar: AppBar(title: const Text('Home')),
-              body: SafeArea(
-                child: Center(
-                  child: Column(
-                    children: [
-                      const Text('Home'),
-                      TextButton(
-                        child: const Text('Log out'),
-                        onPressed: () {
-                          ref.read(loggedInProvider.state).state = false;
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-      '/history': (route) => MaterialPage(
-            child: Scaffold(
-              appBar: AppBar(title: const Text('History')),
-              body: const SafeArea(
-                child: Center(
-                  child: Text('History'),
-                ),
-              ),
-            ),
-          )
-    });
-
-    final loggedOutRoutes = RouteMap(routes: {
-      '/home': (route) => TransitionPage(
-            pushTransition: PageTransition.none,
-            child: Scaffold(
-              appBar: AppBar(title: const Text('Logged out!')),
-              body: SafeArea(
-                child: Center(
-                  child: TextButton(
-                    onPressed: () {
-                      ref.read(loggedInProvider.state).state = true;
-                    },
-                    child: const Text('Log in'),
-                  ),
-                ),
-              ),
-            ),
-          ),
-    });
-
-    return MaterialApp.router(
+    return VRouter(
+      initialUrl: '/',
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'ProximaNova',
       ),
-      routerDelegate: RoutemasterDelegate(
-        routesBuilder: (context) => loggedIn ? loggedInRoutes : loggedOutRoutes,
-      ),
-      routeInformationParser: const RoutemasterParser(),
+      routes: [
+        VGuard(
+          beforeEnter: ((vRedirector) async {
+            final loggedIn = ref.read(loggedInProvider);
+            if (loggedIn) {
+              return;
+            }
+            return vRedirector.to('/login');
+          }),
+          stackedRoutes: [
+            VNester(
+                widgetBuilder: (child) => MyHomePage(child: child),
+                path: '/',
+                nestedRoutes: [
+                  VWidget(
+                    path: null,
+                    widget: const TodayPage(),
+                    transitionDuration: const Duration(milliseconds: 0),
+                  ),
+                  VWidget(
+                    path: '/history',
+                    widget: const HistoryPage(),
+                    aliases: const ['/history/details'],
+                    transitionDuration: const Duration(milliseconds: 0),
+                  ),
+                ],
+                stackedRoutes: [
+                  VWidget(
+                    fullscreenDialog: false,
+                    path: '/history/details',
+                    widget: const HistoryDetailsPage(),
+                    buildTransition: (animation, secondaryAnimation, child) {
+                      final tween =
+                          Tween(begin: const Offset(0.0, 1.0), end: Offset.zero)
+                              .chain(CurveTween(curve: Curves.ease));
+                      return SlideTransition(
+                        position: animation.drive(tween),
+                        child: child,
+                      );
+                    },
+                  )
+                ]),
+          ],
+        ),
+        VWidget(
+          path: '/login',
+          widget: const Scaffold(
+            body: LoginPage(),
+          ),
+          transitionDuration: const Duration(milliseconds: 0),
+        ),
+      ],
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({Key? key, required this.child}) : super(key: key);
+
+  final Widget child;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -97,11 +90,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final tabState = CupertinoTabPage.of(context);
-
-    return CupertinoTabScaffold(
-      tabBuilder: tabState.tabBuilder,
-      tabBar: CupertinoTabBar(
+    return Scaffold(
+      body: widget.child,
+      bottomNavigationBar: CupertinoTabBar(
+        currentIndex: context.vRouter.path == '/' ? 0 : 1,
         items: const [
           BottomNavigationBarItem(
             label: 'Today',
@@ -112,6 +104,109 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(CupertinoIcons.drop),
           ),
         ],
+        onTap: (index) {
+          if (index == 0) {
+            context.vRouter.to('/');
+          } else {
+            context.vRouter.to('/history');
+          }
+        },
+      ),
+    );
+  }
+}
+
+class TodayPage extends ConsumerWidget {
+  const TodayPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SafeArea(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Home'),
+            TextButton(
+              child: const Text('Log out'),
+              onPressed: () {
+                ref.read(loggedInProvider.state).state = false;
+                context.vRouter.to('/login');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LoginPage extends ConsumerWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SafeArea(
+      child: Center(
+        child: TextButton(
+          onPressed: () {
+            ref.read(loggedInProvider.state).state = true;
+            context.vRouter.to('/');
+          },
+          child: const Text('Log in'),
+        ),
+      ),
+    );
+  }
+}
+
+class HistoryPage extends StatelessWidget {
+  const HistoryPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('History'),
+          TextButton(
+            child: const Text('See more'),
+            onPressed: () {
+              context.vRouter.to('/history/details');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class HistoryDetailsPage extends StatelessWidget {
+  const HistoryDetailsPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Positioned(
+              child: IconButton(
+                onPressed: () {
+                  context.vRouter.historyBack();
+                },
+                icon: const Icon(
+                  Icons.close,
+                  size: 35,
+                ),
+              ),
+            ),
+            const Center(
+              child: Text('History details'),
+            ),
+          ],
+        ),
       ),
     );
   }
